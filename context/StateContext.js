@@ -69,7 +69,7 @@ export const StateContext = ({ children }) => {
 
             }
         })
-        console.log(typeof(totalQuantities))
+        
     }
 
     const onRemove = (product) => {

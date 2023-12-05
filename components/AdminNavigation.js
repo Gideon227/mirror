@@ -51,7 +51,7 @@ const AdminNavigation = () => {
 
             <div className="flex flex-col space-y-3">
                 {navigationData?.map((item) => (
-                    <button onClick={() => setAdminNavigation(item.text)} className="hover:bg-white active:bg-white focus:bg-white hover:shadow-sm rounded-lg py-1.5 cursor-pointer flex space-x-2 justify-start items-start my-auto ps-2" key={item.name}>
+                    <button key={item.text} onClick={() => setAdminNavigation(item.text)} className="hover:bg-white active:bg-white focus:bg-white hover:shadow-sm rounded-lg py-1.5 cursor-pointer flex space-x-2 justify-start items-start my-auto ps-2">
                         <div>{item.icon}</div>
                         <p className="text-[14px] text-black font-medium">{item.text}</p>
                     </button>
@@ -61,7 +61,7 @@ const AdminNavigation = () => {
 
         <div className="flex flex-col space-y-4 w-11/12 absolute bottom-10">
             {logoutNavigation?.map((item) => (
-                <button onClick={() => setAdminNavigation(item.text)} className="hover:bg-white focus:bg-white hover:shadow-sm rounded-lg py-1.5 cursor-pointer flex space-x-2 justify-start items-start my-auto ps-2" key={item.text}>
+                <button key={item.text} onClick={() => setAdminNavigation(item.text)} className="hover:bg-white focus:bg-white hover:shadow-sm rounded-lg py-1.5 cursor-pointer flex space-x-2 justify-start items-start my-auto ps-2">
                     <div>{item.icon}</div>
                     <p className="text-[14px] text-black font-medium">{item.text}</p>
                 </button>

@@ -1,34 +1,5 @@
-import React from 'react'
-
-const Orders = () => {
-
-  const tableData = [
-    {
-     "id": 1,
-     "name": "Wendall Gripton",
-     "email": "wg@creative.org",
-     "status": "Pending",
-     "amount": 100,
-     "date": "2022-01-26"
-    },
-    {
-     "id": 2,
-     "name": "Gideon Insitid",
-     "email": "gideon@creative.org",
-     "status": "Paid",
-     "amount": 560,
-     "date": "2022-01-26",
-    },
- ]
-
-  const columns = [
-    { label: "Name", accessor: "name" },
-    { label: "Email", accessor: "email" },
-    { label: "Status", accessor: "status" },
-    { label: "Amount", accessor: "amount" },
-    { label: "Date", accessor: "date" },
-   ];
-
+import Image from 'next/image';
+const Orders = ({ orders, tableData, columns }) => {
   return (
     <div className='py-6'>
       <div className='flex justify-between'>
@@ -41,38 +12,39 @@ const Orders = () => {
           <h1>Filter(TODO)</h1>
         </div>
       </div>
-
+      {console.log(tableData)}
       <div className='mt-6'>
-        <table className='w-full me-12 ms-2'>
-              {/* Table head */}
-          <thead>
-            <tr className='bg-[#F7F9FA]'>
-              {/* <th className='w-1 h-1 border border-gray-950 rounded-md'> </th> */}
-              
-              {columns?.map((column) => (
-                <th key={column.accessor} className='text-zinc-800 font-medium text-[16px] py-2 px-1 text-start'>
-                  {column.label}
-                </th>
-              ))}
-            </tr>
-          </thead>
+        
+        <div className="rounded-lg border border-[#ECECEE] px-5 py-3 space-y-3">
+          <div className='grid grid-cols-12 gap-1 items-start text-start text-gray-900 text-[16px] font-bold'>
+            <p className="col-span-3 text-[14px]">Product</p>
+            <p className="col-span-2 text-[14px]">Address</p>
+            <p className="col-span-2 text-[14px]">Name</p>
+            <p className="col-span-1 text-[14px]">Status</p>
+            <p className="col-span-1 text-[14px]">Price</p>
+            <p className="col-span-1 text-[14px]">Qty</p>
+            <p className="col-span-2 text-[14px]">Date</p>
+          </div>
 
-          {/* Table body */}
-          <tbody>
-            {tableData.map((data) => {
-              return (
-                <tr key={data.id}>
-                  {columns.map(({ accessor }) => {
-                  const tData = data[accessor] ? data[accessor] : "——";
-                  return <td key={accessor} className='py-2 text-[15px]'>{tData}</td>;
-                  })}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+          <div className="space-y-4 pb-2">
+            {orders?.map((item) => (
+              <div className='grid grid-cols-12 gap-1 items-start text-start border-t-[1px] border-[#ECECEE] pt-4 text-gray-900 text-[14px] font-medium' key={item._id}>
+                <div className="col-span-3 space-x-2.5 flex">
+                  <Image src={item.items[1][0].imageURL[0]} alt='Product Image' width={30} height={30} className='rounded-lg object-contain'/>
+                  <p className='font-medium my-auto text-[13px]'>{item.items[1][0].title}</p>
+                </div>
+                <p className="col-span-2">{item.userInformation.address}</p>
+                <p className="col-span-2">{item.userInformation.name}</p>
+                <p className="col-span-1">{item.status}</p>
+                <p className="col-span-1">{item.totalBill}</p>
+                <p className="col-span-1">{item.totalQuantity}</p>
+                <p className="col-span-2">{item.date_added.slice(0, 10)}</p>
+              </div>
+            ))}  
+          </div>
       </div>
     </div>
+  </div>
   )
 }
 

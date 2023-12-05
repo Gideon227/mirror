@@ -1,7 +1,5 @@
 'use client'
 import Image from "next/image"
-
-
 import { useStateContext } from "@context/StateContext"
 
 const CheckoutRightbar = ({ shipping }) => {
@@ -51,13 +49,13 @@ const CheckoutRightbar = ({ shipping }) => {
 
       <div className="flex justify-between">
           <h2 className='text-white text-[15px] font-normal'>Shipping</h2>
-          <h2 className='text-white text-[14px] font-normal'>{shipping}</h2>
+          <h2 className='text-white text-[14px] font-normal'>{shipping && `₦${shipping}`}</h2>
       </div>
       <span className='bg-[#e6e6e6] w-full block h-px mx-auto z-20'> </span>
 
       <div className="flex justify-between">
           <h2 className='text-white text-[15px] font-normal'>Total</h2>
-          <h2 className='text-white text-[20px] font-normal'> <span className="text-[14px] text-gray-400">NGN</span> ₦{totalPriceFromLocalStorage + parseInt(shipping) || totalPriceFromLocalStorage} </h2>
+          <h2 className='text-white text-[22px] font-normal'> <span className="text-[14px] text-gray-400">NGN</span> ₦{totalPriceFromLocalStorage + parseInt(shipping) || totalPriceFromLocalStorage} </h2>
       </div>
 
     </div>

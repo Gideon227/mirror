@@ -1,10 +1,8 @@
 'use client'
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { useRouter } from "next/navigation";
 import Select from 'react-select'
 import countryList from 'react-select-country-list'
-import { useForm } from "react-hook-form";
-import { ErrorMessage } from "@hookform/error-message"
 
 import Image from "next/image"
 import Link from "next/link"
@@ -30,31 +28,86 @@ const page = () => {
     postalCode: '',
     phone: ''
 });
+    const [formError, setFormError] = useState({})
 
-    const {
-      register,
-      formState: { errors },
-      handleSubmit,
-    } = useForm()
     const options = useMemo(() => countryList().getData(), [])
 
     const changeHandler = value => {
       setFormData({ ...formData, country: value })
     }
 
-    const handleInformation = () => {
-      // e.preventDefault()
+    const validate = (values) => {
+      const error = {}
+      const textRegex = /^[a-zA-Z]+$/
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i
+      const addressRegex = /^[a-zA-Z0-9\s,.'-]{5,}$/
+      if (!values.firstName){
+        error.firstName = 'First name is required!'
+      } else if (!textRegex.test(values.firstName)){
+        error.firstName = 'Please make sure you input only alphabets!'
+      }
+      if (!values.lastName){
+        error.lastName = 'Last name is required!'
+      } else if (!textRegex.test(values.lastName)){
+        error.lastName = 'Please make sure you input only alphabets!'
+      }
+      if (!values.email){
+        error.email = 'Email is required!'
+      } else if (!emailRegex.test(values.email)){
+        error.email = 'This is not a valid email!'
+      }
+      if (!values.address){
+        error.address = 'Address is required!'
+      } else if (!addressRegex.test(values.address)){
+        error.address = 'This is not a valid Address!'
+      }
+      if (!values.city){
+        error.city = 'City is required!'
+      }
+      if (!values.state){ 
+        error.state = 'State is required!'
+      } else if (!textRegex.test(values.state)){
+        error.state = 'Please make sure you input only alphabets!'
+      }
+      if (!values.phone){
+        error.phone = 'Phone number is required!'
+      }
+      if (!values.country){
+        error.country = 'Country is required!'
+      }
+      return error
+    }
+
+    useEffect(() => {
+      console.log(formError)
+      if(Object.keys(formError).length === 0 && submitting) {
+        console.log(formData)
+      }
+    }, [formError])
+    
+
+    const handleInformation = (e) => {
+      e.preventDefault()
+      setFormError(validate(formData))
+
       setSubmitting(true)
-  
-      try {
-        typeof window !== "undefined" && localStorage.setItem("userInformation", JSON.stringify(formData));
+      console.log("before if-else block");
+      if(Object.keys(formError).length === 0){      
+        try {
+          typeof window !== "undefined" && localStorage.setItem("userInformation", JSON.stringify(formData));
+          console.log('in the if-else block')
+        }
+        catch (error) {
+          console.log(error)  
+        } finally{
+          setSubmitting(false)
+          router.push('/checkout/shipping')
+        }
       }
-      catch (error) {
-        console.log(error)  
-      } finally{
+      else {
         setSubmitting(false)
-        router.push('/checkout/shipping')
       }
+      console.log("After if-else block");
     }
   
   const checkoutPage =  cartFromLocaleStorage.length > 0 ? (
@@ -82,9 +135,10 @@ const page = () => {
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             required
-            className={`${formData.email && 'pt-4'} rounded-md text-[14px] font-normal text-[#333333] w-full focus:outline-[#545454] focus:outline-2 transition duration-200 outline outline-1 outline-[#bbbbbb] py-3 px-4 me-6`}
+            className={`${formData.email && 'pt-4'} ${formError.email && ('outline-red-600')} rounded-md text-[14px] font-normal text-[#333333] w-full focus:outline-[#545454] focus:outline-2 transition duration-200 outline outline-1 outline-[#bbbbbb] py-3 px-4 me-6`}
           />
           <span className={`${formData.email && 'input-text'} text-[14px] text-[#737373] font-thin text-opacity-80 absolute left-0 top-0 mx-4 transition duration-200`}>Email</span>
+          <span className='text-[12px] text-red-600 font-medium ps-2'>{formError?.email}</span>
         </label>
       </div>
 
@@ -92,13 +146,16 @@ const page = () => {
         <h1 className="text-[18px] mb-2">Shipping address</h1>
 
         {/* Countries Select input */}
-        <Select 
-          options={options} 
-          value={formData.country} 
-          onChange={changeHandler}
-          placeholder='Select Country'
-          className="text-[14px] focus:outline-[#545454]"
-        />
+        <div>
+          <Select 
+            options={options} 
+            value={formData.country} 
+            onChange={changeHandler}
+            placeholder='Select Country'
+            className="text-[14px] focus:outline-[#545454]"
+          />
+          <span className={`${!formError.firstName && 'hidden'} block text-[12px] text-red-600 font-medium ps-2`}>{formError?.country}</span>
+        </div>
         {console.log(formData)}
 
         <div className="flex w-full focus:outline-[#545454] space-x-3 transition duration-200">
@@ -109,15 +166,9 @@ const page = () => {
               required 
               type="text" 
               className={`${formData.firstName && 'pt-4'} rounded-md text-[14px] font-normal text-[#333333] w-full focus:outline-[#545454] focus:outline-2 transition duration-200 outline outline-1 outline-[#bbbbbb] py-3 px-4 me-6`}
-              {...register("singleErrorInput", { required: "This is required." })}
               />
-              <ErrorMessage errors={errors} name="singleErrorInput" />
-              <ErrorMessage
-                errors={errors}
-                name="singleErrorInput"
-                render={({ message }) => <p>{message}</p>}
-              />
-            <span className={`${formData.firstName && 'input-name'} text-[14px] text-[#737373] font-thin text-opacity-80 absolute left-0 top-3 mx-4 transition duration-200`}>First Name</span>
+            <span className={`${formData.firstName && 'input-name'} ${formError.firstName && 'outline-red-600'} text-[14px] text-[#737373] font-thin text-opacity-80 absolute left-0 top-3 mx-4 transition duration-200`}>First Name</span>
+            <span className={`${!formError.firstName && 'hidden'} block text-[12px] text-red-600 font-medium ps-2`}>{formError?.firstName}</span>
           </label>
 
           <label className="relative w-1/2">
@@ -127,7 +178,8 @@ const page = () => {
               required 
               type="text"  
               className={`${formData.lastName && 'pt-4'} rounded-md text-[14px] font-normal text-[#333333] w-full focus:outline-[#545454] focus:outline-2 transition duration-200 outline outline-1 outline-[#bbbbbb] py-3 px-4 me-6`} />
-            <span className={`${formData.lastName && 'input-name'} text-[14px] text-[#737373] font-thin text-opacity-80 absolute left-0 top-3 mx-4 transition duration-200`}>Last Name</span>
+            <span className={`${formData.lastName && 'input-name'} ${formError.lastName && 'outline-red-600'} text-[14px] text-[#737373] font-thin text-opacity-80 absolute left-0 top-3 mx-4 transition duration-200`}>Last Name</span>
+            <span className={`${!formError.lastName && 'hidden'} block text-[12px] text-red-600 font-medium ps-2`}>{formError?.lastName}</span>
           </label>
         </div>
 
@@ -139,7 +191,8 @@ const page = () => {
             required
             className={`${formData.address && 'pt-4'} rounded-md text-[14px] font-normal text-[#333333] w-full focus:outline-[#545454] focus:outline-2 transition duration-200 outline outline-1 outline-[#bbbbbb] py-3 px-4 me-6`}
           />
-          <span className={`${formData.address && 'input-name'} text-[14px] text-[#737373] font-thin text-opacity-80 absolute left-0 top-3 mx-4 transition duration-200`}>Address</span>
+          <span className={`${formData.address && 'input-name'} ${formError.address} text-[14px] text-[#737373] font-thin text-opacity-80 absolute left-0 top-3 mx-4 transition duration-200`}>Address</span>
+          <span className={`${!formError.address && 'hidden'} block text-[12px] text-red-600 font-medium ps-2`}>{formError?.address}</span>
         </label>
 
         <label className="relative">
@@ -161,7 +214,8 @@ const page = () => {
               onChange={(e) => setFormData({ ...formData, city: e.target.value })}
               className={`${formData.city && 'pt-4'} rounded-md text-[14px] font-normal text-[#333333] w-full focus:outline-[#545454] focus:outline-2 transition duration-200 outline outline-1 outline-[#bbbbbb] py-3 px-4 me-6`} />
           
-            <span className={`${formData.city && 'input-name'} text-[14px] text-[#737373] font-thin text-opacity-80 absolute left-0 top-3 mx-4 transition duration-200`}>City</span>
+            <span className={`${formData.city && 'input-name'} ${formError.city && 'outline-red-600'} text-[14px] text-[#737373] font-thin text-opacity-80 absolute left-0 top-3 mx-4 transition duration-200`}>City</span>
+            <span className={`${!formError.city && 'hidden'} block text-[12px] text-red-600 font-medium ps-2 flex-wrap`}>{formError?.city}</span>
           </label>
 
 
@@ -173,13 +227,13 @@ const page = () => {
               onChange={(e) => setFormData({ ...formData, state: e.target.value.toUpperCase() })}
               className={`${formData.state && 'pt-4'} uppercase rounded-md text-[14px] font-normal text-[#333333] w-full focus:outline-[#545454] focus:outline-2 transition duration-200 outline outline-1 outline-[#bbbbbb] py-3 px-4 me-6`} />
           
-            <span className={`${formData.state && 'input-name'} text-[14px] text-[#737373] font-thin text-opacity-80 absolute left-0 top-3 mx-4 transition duration-200`}>State</span>
+            <span className={`${formData.state && 'input-name'} ${formError.state && 'outline-red-600'} text-[14px] text-[#737373] font-thin text-opacity-80 absolute left-0 top-3 mx-4 transition duration-200`}>State</span>
+            <span className={`${!formError.state && 'hidden'} block text-[12px] text-red-600 font-medium ps-2 flex-wrap`}>{formError?.state}</span>
           </label>
           
           <label className="relative">
             <input 
-              required 
-              type="text"  
+              type="number"  
               value={formData.postalCode}
               onChange={(e) => setFormData({ ...formData, postalCode: e.target.value })}
               className={`${formData.postalCode && 'pt-4'} rounded-md uppercase text-[14px] font-normal text-[#333333] w-full focus:outline-[#545454] focus:outline-2 transition duration-200 outline outline-1 outline-[#bbbbbb] py-3 px-4 me-6`} />
@@ -191,12 +245,14 @@ const page = () => {
 
         <label className="relative">
           <input 
+            required
             type="text"
             value={formData.phone}
             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-            className={`${formData.phone && 'pt-4'} rounded-md text-[14px] font-normal text-[#333333] w-full focus:outline-[#545454] focus:outline-2 transition duration-200 outline outline-1 outline-[#bbbbbb] py-3 px-4 me-6`}
+            className={`${formData.phone && 'pt-4'} ${formError.phone && 'outline-red-600'} rounded-md text-[14px] font-normal text-[#333333] w-full focus:outline-[#545454] focus:outline-2 transition duration-200 outline outline-1 outline-[#bbbbbb] py-3 px-4 me-6`}
           />
           <span className={`${formData.phone && 'input-name'} text-[14px] text-[#737373] font-thin text-opacity-80 absolute left-0 top-3 mx-4 transition duration-200`}>Phone</span>
+          <span className={`${!formError.phone && 'hidden'} block text-[12px] text-red-600 font-medium ps-2`}>{formError?.phone}</span>
         </label>
 
         <label className="flex space-x-2 cursor-pointer">

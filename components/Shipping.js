@@ -15,10 +15,10 @@ const Shipping = () => {
             <Image alt="logo" src='/website-logo.png' width={100} height={10} className="pt-16 pb-2"/>
         </Link>           
         <div className='flex justify-center items-center '>
-            <Link href='/cart' className="text-[14px] flex text-[#452b1a] font-normal gap-2 focus:font-extrabold">Cart <LiaGreaterThanSolid size={18} className="my-auto pe-2" /> </Link>
-            <Link href='/checkout' className="text-[14px] flex text-[#452b1a] font-normal gap-2 active:font-extrabold focus:font-extrabold">Information <LiaGreaterThanSolid size={18} className="my-auto pe-2" /> </Link>
-            <Link href='/checkout/shipping' className="text-[14px] flex text-[#452b1a] font-normal gap-2 active:font-extrabold focus:font-extrabold">Shipping <LiaGreaterThanSolid size={18} className="my-auto pe-2" /> </Link>
-            <p className="text-[14px] flex text-[#737373] font-normal gap-2 active:font-extrabold focus:font-extrabold">Payment </p>
+            <Link href='/cart' className="text-[14px] flex text-[#452b1a] font-normal gap-2 hover:font-extrabold">Cart <LiaGreaterThanSolid size={18} className="my-auto pe-2" /> </Link>
+            <Link href='/checkout' className="text-[14px] flex text-[#452b1a] font-normal gap-2 ">Information <LiaGreaterThanSolid size={18} className="my-auto pe-2" /> </Link>
+            <Link href='/checkout/shipping' className="text-[14px] flex text-[#452b1a] font-semibold gap-2 ">Shipping <LiaGreaterThanSolid size={18} className="my-auto pe-2" /> </Link>
+            <p className="text-[14px] flex text-[#737373] font-normal gap-2 ">Payment </p>
         </div>
         <div className="rounded-md border-[#d9d9d9] border px-4 py-3">
             <div className="flex justify-between">
@@ -32,7 +32,7 @@ const Shipping = () => {
             <div className="flex justify-between">
                 <div className="flex space-x-8 my-auto">
                     <p className="text-[#737373] text-[15px]">Ship to</p>
-                    <p className="text-[15px] font-medium">{userInformationLocalStorage?.address + userInformationLocalStorage?.city + userInformationLocalStorage?.state || 'No email'}</p>
+                    <p className="text-[15px] font-medium">{userInformationLocalStorage?.address + ', ' + userInformationLocalStorage?.city || 'No address'}</p>
                 </div>
                 <Link href='/checkout' className="text-[12px]">Change</Link>
             </div>
@@ -45,17 +45,17 @@ const Shipping = () => {
                     <div className="flex space-x-6 my-auto">
                         <p className="text-[#737373] text-[15px] ">Contact</p>
                         <p className="text-[14px]">
-                            {userInformationLocalStorage?.state !== 'Lagos' ? (
-                             <span className="text-[#737373] text-[14px]">Shipping Outside of Lagos</span>   
+                            {userInformationLocalStorage?.state === 'LAGOS' ? (
+                                <span className="text-[#737373] text-[14px]">Shipping Around Lagos</span>  
                             ): (
-                                <span className="text-[#737373] text-[14px]">Shipping Around Lagos</span>
+                                <span className="text-[#737373] text-[14px]">Shipping Outside Lagos</span> 
                             )}
                         </p>
                     </div>
-                    {userInformationLocalStorage?.state !== 'Lagos' ? (
-                        <p className="text-[#737373] text-[16px] font-medium">{`₦ ${0.33 * totalPriceFromLocalStorage}`}</p>   
+                    {userInformationLocalStorage?.state === 'LAGOS' ? (
+                        <p className="text-[#737373] text-[16px] font-medium">{`₦ ${0.1 * totalPriceFromLocalStorage}`}</p>   
                             ): (
-                        <p className="text-[#737373] text-[16px] font-medium">{`₦ ${0.1 * totalPriceFromLocalStorage}`}</p>
+                        <p className="text-[#737373] text-[16px] font-medium">{`₦ ${0.33 * totalPriceFromLocalStorage}`}</p>
                     )}
                 </div>
             </div>

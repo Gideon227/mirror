@@ -113,3 +113,7 @@ h1, p{
 .css-13cymwt-control{
   padding: 4px 2px;
 }
+input:invalid[focused='true'] ~ span {
+  display: block;
+
+}

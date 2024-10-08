@@ -9,7 +9,6 @@ import Bestsellers from '@components/Bestsellers'
 export default function Home() {
   return (
     <div>  
-      <Subnav />
       <Hero />
       
       <Displayproducts />

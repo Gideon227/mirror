@@ -6,10 +6,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import CreateProducts from './CreateProducts'
+import { RxCross2 } from 'react-icons/rx'
 
 const AdminProducts = () => {
-  const { allProducts } = useStateContext()
+  const { allProducts, handleRemoveProductFromDb } = useStateContext()
   const [showCreateProduct, setShowCreateProduct] = useState(false)
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
 
   return (
     <div className='pt-8'>
@@ -43,6 +45,7 @@ const AdminProducts = () => {
           <p className="col-span-1 text-[14px]">Collections</p>
           <p className="col-span-1 text-[14px]">Price</p>
           <p className="col-span-1 text-[14px]">Action</p>
+          
       </div>
 
       <div className="space-y-4 pb-2">
@@ -58,9 +61,31 @@ const AdminProducts = () => {
             <p className="col-span-1">{item.price}</p>
             <div className='col-span-1 flex space-x-4 my-auto'>
               <Link href={`/admin/products/${item._id}`} className='cursor-pointer'><AiOutlineEdit size={16}/></Link>
-              <button className='cursor-pointer'><AiOutlineDelete size={16} className='text-[#FF0000]'/></button>
+              <button onClick={() => setShowDeleteConfirmation(true)} className='cursor-pointer'><AiOutlineDelete size={16} className='text-[#FF0000]'/></button>
             </div>
+
+            {showDeleteConfirmation && (
+              <div className='md:px-20 md:py-8 flex justify-center items-center px-2 py-4 fixed z-50 top-0 w-screen h-full overflow-scroll left-0 bg-black bg-opacity-50'>
+                <div className='bg-white pb-12 rounded-lg w-1/2'>
+                  <button onClick={() => {setShowDeleteConfirmation(false)}} className='py-6 relative'>
+                      <RxCross2 className='absolute top-3 left-4 text-gray-700' size={24}/>
+                  </button>
+
+                  <hr className='w-full text-gray-600 opacity-70 h-px'/>
+
+                  <div className='md:mx-20 md:my-8 my-4 mx-2 md:space-y-6 space-y-2'>
+                    <p>Are you sure you want to delete this product?</p>
+                    <div className='flex gap-x-2 items-center w-full'>
+                      <button onClick={() => setShowDeleteConfirmation(false)} className='border-[#452b1a] border text-[452b1a] py-2 px-6'>Cancel</button>
+                      <button onClick={() => handleRemoveProductFromDb(item._id)} className='bg-[#DC3545] text-[#fff] py-2 px-6 '>Delete</button>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            )}
           </div>
+
         ))}
         
       </div>
@@ -74,6 +99,8 @@ const AdminProducts = () => {
           </div>
         )
       }
+
+      
     </div>
   )
 }

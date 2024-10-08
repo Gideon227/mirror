@@ -94,12 +94,16 @@ h1, p{
   align-items: center;
 }
 
+.css-13cymwt-control{
+  padding: 2px 2px 2px 8px;
+}
+
 .divider::before, .divider::after {
   flex: 1;
   content: '';
   height: 1px;
   background-color: #e6e6e6;
-  //opacity: 50%;
+  opacity: 50%;
   margin: 5px;
 }
 

@@ -3,8 +3,12 @@ import { useEffect, useState } from 'react'
 import getProduct from '@libs/getProduct'
 import Image from 'next/image'
 
+import EditProductTopbar from './EditProductTopbar'
+import EditProductContent from './EditProductContent'
+
 const EditProduct = ({ slug }) => {
     const [productItems, setProductItems] = useState([])
+    const [submitting, setSubmitting] = useState(false)
 
     useEffect(() => {
         const fetchProductItem = async() => {
@@ -16,16 +20,9 @@ const EditProduct = ({ slug }) => {
     
 
   return (
-    <div className='grid grid-cols-4 gap-4 pt-6'>
-        <div className='col-span-1'>
-            <div className='bg-gray-800 rounded-lg p-4 space-y-4'>
-                <Image src={productItems?.imageURL} width={400} height={400} className='rounded-lg object-contain' />
-                <h1 className='font-normal text-[12px]'>{productItems?.title}</h1>
-            </div>
-        </div>
-        <div className='col-span-3 bg-gray-800 rounded-lg p-4'>
-
-        </div>
+    <div className='flex flex-col space-y-6'>
+      <EditProductTopbar submitting={submitting}/>
+      <EditProductContent productItems={productItems} setSubmitting={setSubmitting} slug={slug}/>  
     </div>
   )
 }

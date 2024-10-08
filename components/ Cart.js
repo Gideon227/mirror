@@ -1,3 +1,4 @@
+"use client"
 import React, { useRef } from 'react';
 import { AiOutlineMinus, AiOutlinePlus, AiOutlineLeft, AiOutlineShopping } from 'react-icons/ai';
 import { RxCross2 } from 'react-icons/rx'
@@ -8,7 +9,6 @@ import { useStateContext } from '@context/StateContext';
 import Link from 'next/link';
 
 const  Cart = () => {
-
     const { onCartItemQuantity, onRemove, setShowCart, totalQuantities, totalPrice, cartItems } = useStateContext()
   
     return (
@@ -72,7 +72,7 @@ const  Cart = () => {
                         </h2>
                 </div>
 
-                <button href='/checkout' className='bg-[#452b1a] mx-1 hover:bg-[#fff] hover:border hover:text-black text-white border-[#452b1a] py-2 text-[12px] font-semibold'>
+                <button onClick={() => setShowCart(false)} className='bg-[#452b1a] mx-1 hover:bg-[#fff] border hover:text-black text-white border-[#452b1a] py-2 text-[12px] font-semibold'>
                     <Link href='/checkout'>CHECKOUT</Link>
                 </button>
                 <p className='text-[10px] text-[#452b1a] text-center font-bold'>Shipping & taxes calculated at checkout</p>

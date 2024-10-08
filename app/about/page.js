@@ -8,8 +8,7 @@ const AboutPage = () => {
       <div className='flex '>
         <h1 className='text-[32px] me-10 mt-10'>STORY</h1>
         <p className='text-[14px] font-medium mx-10 mt-10 leading-6'>
-          NUDE PROJECT is a ready-to-wear label founded in 2018 in a small dorm room by two friends eager to create something different. Bruno and Alex were raised in completely different environments. One from Bali, the other from Burgos (a little more north) had an instant connection that, after a month of knowing each other, led them to create a joint movement that would change their lives forever
-          "For us, it was all about the hip-hop scene, the rawness of skateboarding and the artist's creativity which motivated us to imprint a way of living shared through the internet."
+          "In a bustling city, where creativity collides with culture, our clothing brand was born from a shared passion for self-expression and innovation. Founded by a group of diverse friends, each with their own artistic backgrounds, we set out to redefine modern fashion. Our collections blend bold designs and sustainable practices, celebrating individuality while respecting the planet. Every stitch tells a story, inspired by the world around us—from street art to music and everything in between. We invite you to join our journey, where style becomes a canvas for your unique identity and every piece empowers you to stand out and inspire."
         </p>
         <Image src='/collection 4.webp' width={354} height={442} alt='a image about us' className="me-10" />
       </div>
@@ -17,7 +16,7 @@ const AboutPage = () => {
       <div className="flex mx-20 mt-16 justify-between">
         <div className="gap-y-8 w-1/2">
           <h1 className="text-[20px] font-bold leading-6">PROJECT MAKES UPDATED, MODERN CLASSICS WITH A COMMITMENT TO TIMELESSNESS AND QUALITY </h1>
-          <p className='text-[14px] font-medium mt-8 leading-6'>NUDE PROJECT is more than just clothing. It is a creative platform for the misfits, the outcasts and the wild to express themselves. Our garments aim to inspire the new generation to pursue their passion, orthodoxly or not, by empowering them to create without fear of judgement.We strive for designs that embrace a modern attitude for a creative life, seamlessly blending comfort, minimalism and elegance in every cut.
+          <p className='text-[14px] font-medium mt-8 leading-6'>MIRROR  transcends traditional fashion; it’s a vibrant platform for the rebels, dreamers, and free spirits to showcase their individuality. Our pieces are crafted to ignite inspiration in the next generation, encouraging fearless self-expression and the pursuit of passions—conventional or not. We focus on innovative designs that reflect a contemporary mindset, merging comfort, simplicity, and sophistication in every detail. Join us in embracing creativity without limits, where style becomes a statement of who you truly are.
 
           </p>
         </div>

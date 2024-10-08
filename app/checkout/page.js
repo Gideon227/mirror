@@ -12,6 +12,8 @@ import { LiaGreaterThanSolid, LiaLessThanSolid } from 'react-icons/lia'
 import { useStateContext } from '@context/StateContext';
 
 const page = () => {
+  const userInformationLocalStorage = typeof window !== "undefined" && JSON.parse(localStorage.getItem("userInformation"));
+
   const { cartFromLocaleStorage, totalPriceFromLocalStorage } = useStateContext()
   const router = useRouter()
   const [submitting, setSubmitting] = useState(false)
@@ -119,8 +121,8 @@ const page = () => {
       <div className='flex justify-center items-center '>
         <Link href='/cart' className="text-[14px] flex text-[#452b1a] font-normal gap-2 focus:font-extrabold">Cart <LiaGreaterThanSolid size={18} className="my-auto pe-2" /> </Link>
         <Link href='/checkout' className="text-[14px] flex text-[#452b1a] font-extrabold gap-2 active:font-extrabold focus:font-extrabold">Information <LiaGreaterThanSolid size={18} className="my-auto pe-2" /> </Link>
-        <Link href='/checkout/shipping' className="text-[14px] flex text-[#452b1a] font-normal gap-2 active:font-extrabold focus:font-extrabold">Shipping <LiaGreaterThanSolid size={18} className="my-auto pe-2" /> </Link>
-        <Link href='/checkout/payment' className="text-[14px] flex text-[#452b1a] font-normal gap-2 active:font-extrabold focus:font-extrabold">Payment</Link>
+        <div href='/checkou' className="text-[14px] flex text-[#452b1a] font-normal gap-2 active:font-extrabold focus:font-extrabold">Shipping <LiaGreaterThanSolid size={18} className="my-auto pe-2" /> </div>
+        <div className="text-[14px] flex text-[#452b1a] font-normal gap-2 active:font-extrabold focus:font-extrabold">Payment</div>
       </div>
 
       <div className='divider'>OR</div>
@@ -132,7 +134,7 @@ const page = () => {
         <label className="relative">
           <input 
             type="email"
-            value={formData.email}
+            value={formData.email || userInformationLocalStorage.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             required
             className={`${formData.email && 'pt-4'} ${formError.email && ('outline-red-600')} rounded-md text-[14px] font-normal text-[#333333] w-full focus:outline-[#545454] focus:outline-2 transition duration-200 outline outline-1 outline-[#bbbbbb] py-3 px-4 me-6`}

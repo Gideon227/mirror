@@ -31,7 +31,7 @@ const TrackOrders = ({ userInformation, orderItem, userId }) => {
 
   return (
     <div className='py-14 lg:px-24 px-4 space-y-4'>
-        <h1 className='text-[18px]'>Hello <span className='font-semibold text-[20px]'>{userInformation.firstNamen}</span></h1>
+        <h1 className='text-[18px]'>Hello <span className='font-semibold text-[18px]'>{userInformation.firstName}</span></h1>
         <div className='lg:border-b-[1px] lg:border-[#ECECEE] w-full flex justify-between max-lg:grid max-lg:grid-cols-2 max-lg:gap-4'>
             <div className='flex flex-col space-y-2 items-start py-3'>
                 <h1 className='font-medium text-[20px]'>Total Order</h1>

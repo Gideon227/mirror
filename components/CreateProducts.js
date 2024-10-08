@@ -2,11 +2,29 @@
 import { useState } from 'react';
 import { RxCross2 } from 'react-icons/rx';
 import Select from 'react-select';
+import UploadImage from './UploadImage';
 
 const CreateProducts = ({ setShowCreateProduct }) => {
     const [selectedCategory, setSelectedCategory] = useState(null)
     const [selectedCollection, setSelectedCollection] = useState(null)
     const [selectedSizes, setSelectedSizes] = useState(null)
+    const [submitting, setSubmitting] = useState(false)
+    const [images, setImages] = useState([])
+    const [formData, setFormData] = useState({
+        title:"",
+        desc: '',
+        category: [],
+        collections: [],
+        size: [],
+        color: [],
+        price: 0,
+    });
+
+
+    //Image upload logic
+    const [previewSources, setPreviewSources] = useState('');
+    const [uploadSuccess, setUploadSuccess] = useState('');
+    const [imageUrls, setImageUrls] = useState([])
 
 
     const categoryOptions = [
@@ -36,8 +54,91 @@ const CreateProducts = ({ setShowCreateProduct }) => {
         { value: 'XXL', label: 'XXL' }
     ]
 
-    const handleSubmit = () => {
+    const handleCategoryChange = (selectedOptions) => {
+        const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
+        setSelectedCategory(selectedOptions);
+        setFormData((prevData) => ({
+            ...prevData,
+            category: selectedValues,
+        }));
+    };
+
+    const handleCollectionChange = (selectedOptions) => {
+        const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
+        setSelectedCollection(selectedOptions);
+        setFormData((prevData) => ({
+            ...prevData,
+            collections: selectedValues,
+        }));
+    };
+
+    const handleSizeChange = (selectedOptions) => {
+        const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
+        setSelectedSizes(selectedOptions);
+        setFormData((prevData) => ({
+            ...prevData,
+            size: selectedValues,
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        setSubmitting(true)
         
+        const imageData = await Promise.all(
+            images.map((image) => {
+              return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(image);
+              });
+            })
+          );
+
+        try {
+            const res = await fetch('/api/upload',{
+                method: 'POST',
+                body: JSON.stringify({
+                    images: imageData
+                }),
+                headers: { 'Content-Type': 'application/json' },
+            })
+
+            if (!res.ok) {
+                const errorText = await res.text();
+                throw new Error(errorText);
+            }
+
+            const { urls } = await res.json();
+            setImageUrls(urls);
+
+            console.log(imageUrls)
+            console.log(urls)
+            console.log(imageData)
+
+            const response = await fetch ('/api/products/new',{
+                method: 'POST',
+                body: JSON.stringify({
+                    title: formData.title,
+                    imageURL: urls,
+                    desc: formData.desc,
+                    size: formData.size,
+                    color: formData.color,
+                    price: formData.price,
+                    category: formData.category,
+                    collections: formData.collections
+                  }),
+            })
+            if(response.ok){
+                console.log('New Product Added')
+            }    
+
+        } catch (error) {
+            console.log(error)
+        }finally{
+            setSubmitting(false)
+        }
     }
 
   return (
@@ -58,12 +159,12 @@ const CreateProducts = ({ setShowCreateProduct }) => {
                         </span>
 
                         <input
-                        // value={formData.title}
-                        // onChange={(e) => setFormData({ ...formData, title: e.target.value.toUpperCase() })}
-                        type='text'
-                        placeholder='Product Title'
-                        required
-                        className='w-[100%] uppercase flex border mt-2 mb-8 px-3 py-2 text-sm text-gray-500 outline-0'
+                            value={formData.title}
+                            onChange={(e) => setFormData({ ...formData, title: e.target.value.toUpperCase() })}
+                            type='text'
+                            placeholder='Product Title'
+                            required
+                            className='w-[100%] uppercase flex border mt-2 mb-8 px-3 py-2 text-sm text-gray-500 outline-0'
                         />  
                     </label>
 
@@ -73,14 +174,14 @@ const CreateProducts = ({ setShowCreateProduct }) => {
                         </span>
 
                         <textarea
-                        // value={formData.title}
-                        // onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                        type='text'
-                        placeholder='Product Description'
-                        rows={8}
-                        cols={20}
-                        required
-                        className='w-[100%] flex border mt-2 mb-8 px-3 py-2 text-sm text-gray-500 outline-0'
+                            value={formData.desc}
+                            onChange={(e) => setFormData({ ...formData, desc: e.target.value })}
+                            type='text'
+                            placeholder='Product Description'
+                            rows={8}
+                            cols={20}
+                            required
+                            className='w-[100%] flex border mt-2 mb-8 px-3 py-2 text-sm text-gray-500 outline-0'
                         />  
                     </label>
 
@@ -90,7 +191,7 @@ const CreateProducts = ({ setShowCreateProduct }) => {
                         </span>
                         <Select 
                             defaultValue={selectedCategory}
-                            onChange={setSelectedCategory}
+                            onChange={handleCategoryChange}
                             options={categoryOptions}
                             isMulti
                             closeMenuOnSelect={false}
@@ -106,7 +207,7 @@ const CreateProducts = ({ setShowCreateProduct }) => {
                         </span>
                         <Select 
                             defaultValue={selectedCollection}
-                            onChange={setSelectedCollection}
+                            onChange={handleCollectionChange}
                             options={collectionOptions}
                             isMulti
                             closeMenuOnSelect={false}
@@ -122,7 +223,7 @@ const CreateProducts = ({ setShowCreateProduct }) => {
                         </span>
                         <Select 
                             defaultValue={selectedSizes}
-                            onChange={setSelectedSizes}
+                            onChange={handleSizeChange}
                             options={sizeOptions}
                             isMulti
                             closeMenuOnSelect={false}
@@ -138,19 +239,39 @@ const CreateProducts = ({ setShowCreateProduct }) => {
                         </span>
 
                         <input
-                        // value={formData.title}
-                        // onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                        type='number'
-                        placeholder='Product Price'
-                        required
-                        className='w-[100%] flex border mt-2 mb-8 px-3 py-2 text-sm text-gray-500 outline-0'
+                            value={formData.price}
+                            onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                            type='number'
+                            placeholder='Product Price'
+                            required
+                            className='w-[100%] flex border mt-2 mb-8 px-3 py-2 text-sm text-gray-500 outline-0'
                         />  
                     </label>
 
 
                 </form>
 
-                <div></div>
+                <div>
+                    <UploadImage 
+                        uploadSuccess={uploadSuccess}
+                        setUploadSuccess={setUploadSuccess}
+                        setImages={setImages}
+                        images={images}
+                        imageUrls= {imageUrls}
+                        previewSources={previewSources}
+                        setPreviewSources={setPreviewSources}
+                    />
+                </div>
+            </div>
+
+            <div className='w-screen flex justify-center items-center mx-3 mb-5 mt-8 gap-4'>
+                <button
+                onClick={handleSubmit}
+                disabled={submitting}
+                className='bg-[#452b1a] mx-1 hover:bg-[#fff] hover:border hover:text-black text-white border-[#452b1a] py-4 w-1/2 text-[16px] font-normal'
+                >
+                    {submitting ? "Creating..." : "Create Product"}
+                </button>
             </div>
         </div> 
     </div>

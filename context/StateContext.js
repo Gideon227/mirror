@@ -117,6 +117,28 @@ export const StateContext = ({ children }) => {
         return prev - 1})
     }
 
+    const handleRemoveProductFromDb = async (id) => {
+       try {
+            const response = await fetch(`http://localhost:3000/api/products/${id}`,{
+                method: 'DELETE',
+                body: JSON.stringify({
+                    id
+                }),
+                headers: { 'Content-Type': 'application/json' },
+            })
+            if (response.ok) {
+                console.log(`product with the id number: ${id} has been deleted`)
+                setAllProducts((prevProducts) => prevProducts.filter((product) => product._id !== id));
+            }
+            else{
+                const errorText = await res.text();
+                throw new Error(errorText);
+            }
+       } catch (error) {
+        console.log(error)
+       }
+    }
+
     return(
         <Context.Provider
             value={{
@@ -141,7 +163,8 @@ export const StateContext = ({ children }) => {
                 totalPriceFromLocalStorage,
                 allProducts,
                 adminNavigation,
-                setAdminNavigation
+                setAdminNavigation,
+                handleRemoveProductFromDb
             }}
         >
             {children}

@@ -73,7 +73,7 @@ const Subnav = () => {
       </div>
 
       <div className='bg-[#452b1a] justify-center relative text-center'>
-          <h3 className='p-2 text-white text-xs font-light'>{index ? ("FREE SHIPPING: NATIONAL OVER 100€ | INTERNATIONAL OVER 200€") : ("DUE TO HIGH DEMAND ORDERS CAN SUFFER DELAYS")}</h3>
+          <h3 className='p-2 text-white text-[10px] font-light'>{index ? ("FREE SHIPPING: NATIONAL OVER 100€ | INTERNATIONAL OVER 200€") : ("DUE TO HIGH DEMAND ORDERS CAN SUFFER DELAYS")}</h3>
       </div>
 
           {/** TODO */}

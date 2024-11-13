@@ -57,10 +57,10 @@ const ProductPage = ({ slug }) => {
   return (
     <div className='flex gap-x-1 w-screen p-2 flex-col'>
       <div className='flex w-screen flex-col py-2.5 lg:flex-row'>
-        <div className='w-3/5 grid grid-cols-2 grid-rows-2 max-lg:hidden'>
+        <div className='w-3/5 grid grid-cols-2 grid-rows-2 gap-2 max-lg:hidden'>
           {productItem?.imageURL.map((item, index) => (
-            <div className='flex' key={index}>
-              <Image width={370} height={462} src={productItem?.imageURL[index]} alt='product images' className='object-cover'/>
+            <div className='flex h-[362px] w-full relative' key={index} >
+              <Image fill style={{ objectFit: 'cover'}} src={productItem?.imageURL[index]} alt='product images' className='object-cover'/>
             </div>
           ))}
         </div>

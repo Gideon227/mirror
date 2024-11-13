@@ -8,7 +8,7 @@ import Bestsellers from '@components/Bestsellers'
 
 export default function Home() {
   return (
-    <div>  
+    <div className='overflow-hidden'>  
       <Hero />
       
       <Displayproducts />

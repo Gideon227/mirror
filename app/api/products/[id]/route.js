@@ -27,18 +27,23 @@ export const DELETE = async (request) => {
     }
 }
 
-export const PUT = async (request) => {
-    const { id } = request.query;
+export const PATCH = async ( request, { params } ) => {
+    const { id } = params
     const { title, imageURL, desc, size, color, price, category, collections } = await request.json()
     try {
         connectToDB()
-        const updatedProduct = await Product.findByIdAndUpdate(id, req.body, {
+        const updatedProduct = await Product.findByIdAndUpdate(id, { $set: { title, imageURL, desc, size, color, price, category, collections } }, {
             new: true,
             runValidators: true,
         })
+        console.log('Updated Product:', updatedProduct);
+        if (!updatedProduct) {
+            throw new Error('Product not found or not updated');
+        }
 
         return new Response(JSON.stringify(updatedProduct), {status: 200} )
     } catch (error) {
-        return new Response("Failed to fetch a single product", { status: 500 })
+        console.error('Error updating product:', error);
+        return new Response("Failed to update a single product", { status: 500 })
     }
 }

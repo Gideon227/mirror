@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image'; 
-import { AiOutlineUpload } from 'react-icons/ai';
+import { AiOutlineUpload, AiFillDelete  } from 'react-icons/ai';
 import EditProductForm from './EditProductForm';
+import { toast } from "react-hot-toast";
 
-const EditProductContent = ({ productItems, setSubmitting, slug }) => {
+const EditProductContent = ({ productItems, submitting, setSubmitting, slug }) => {
   const [formData, setFormData] = useState({
     title: productItems?.title,
     imageURL: productItems?.imageURL,
@@ -19,6 +20,7 @@ const EditProductContent = ({ productItems, setSubmitting, slug }) => {
     const [selectedCollection, setSelectedCollection] = useState(null)
     const [selectedSizes, setSelectedSizes] = useState(null)
     const [previewImage, setPreviewImage] = useState(productItems?.imageURL || [])
+    const [imageUrls, setImageUrls] = useState([])
 
 useEffect(() => {
   if (productItems) {
@@ -117,31 +119,59 @@ const handleSizeChange = (selectedOptions) => {
       ...prevData,
       imageURL: [...prevData.imageURL, ...imagePreviews] 
     }));
+    setPreviewImage((prevImages) => [...prevImages, ...imagePreviews]);
     console.log(formData)
   };
+
+
+  const handleDeletePreviewImage = (src) => {
+    const updatedPreviews = previewImage.filter((item) => item !== src);
+    setPreviewImage(updatedPreviews);
+
+    const updatedImageUrl = formData.imageURL.filter((item) => item !== src);
+    setFormData((prevData) => ({
+      ...prevData,
+      imageURL: [updatedImageUrl] 
+    }));
+    console.log(formData.imageURL)
+    console.log(previewImage)
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSubmitting(true)
-
-    const imageData = await Promise.all(
-      productItems?.imageURL.map((image) => {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
-          reader.onerror = reject;
-          reader.readAsDataURL(image);
-        });
-      })
-      
-    );
       
       try {
+
+            const res = await fetch('/api/upload',{
+              method: 'POST',
+              body: JSON.stringify({
+                  images: formData.imageURL
+              }),
+              headers: { 'Content-Type': 'application/json' },
+            })
+  
+            if (!res.ok) {
+                const errorText = await res.text();
+                throw new Error(errorText);
+                
+            }
+  
+            const { urls } = await res.json();
+            setImageUrls(urls);
+            setFormData((prevData) => ({
+              ...prevData,
+              imageURL: urls, 
+           }));
+  
+           await new Promise((resolve) => setTimeout(resolve, 100)); 
+           console.log('Updated FormData:', formData); 
+
           const response = await fetch (`/api/products/${slug}`,{
-            method: 'PUT',
+            method: 'PATCH',
             body: JSON.stringify({
               title: formData.title,
-              imageURL: imageData,
+              imageURL: formData.imageURL,
               desc: formData.desc,
               size: formData.size,
               color: formData.color,
@@ -152,12 +182,18 @@ const handleSizeChange = (selectedOptions) => {
           })
           if(response.ok){
               console.log('Product Updated')
+              toast.success(`Successfully updated ${formData.title}`, {
+                style: {
+                    fontSize: '12px',
+                }
+            })
           }    
 
       } catch (error) {
           console.log(error)
       }finally{
           setSubmitting(false)
+          
       }
     }
 
@@ -205,14 +241,16 @@ const handleSizeChange = (selectedOptions) => {
 
               <div className='flex space-x-2 pt-4 no-scrollbar overflow-scroll items-center justify-center'>
                 {previewImage && previewImage.map((item) => (
+                  <div className='relative'>  
                     <Image
                       src={item}
                       width={60}
                       height={80}
                       className='rounded-lg object-contain'
                       alt='Product Image'
-                  />
-                  
+                    />
+                    <button className='absolute right-0 -top-2' onClick={() => handleDeletePreviewImage(item)}><AiFillDelete  color='red' /></button>
+                  </div> 
                 ))}
               </div>
 
@@ -221,7 +259,7 @@ const handleSizeChange = (selectedOptions) => {
           <div className='col-span-7 bg-gray-100 rounded-lg p-4'>
             <h1 className='font-semibold text-[16px] text-[#452b1a] pb-1'> General information</h1>
             <hr className='w-full text-[#452b1a] py-2.5' />
-              {console.log(formData)}
+              
             <div className='flex flex-col space-y-2 px-6'>
               <EditProductForm 
                 type="input"
@@ -272,13 +310,14 @@ const handleSizeChange = (selectedOptions) => {
               <EditProductForm 
                   type="textArea"
                   value={formData.desc}
-                  onChangeFunction= {(e) => setFormData({ ...formData, price: e.target.value })} 
+                  onChangeFunction= {(e) => setFormData({ ...formData, desc: e.target.value })} 
                   placeholder= "Description" 
                   labelText= "Product Description" 
                 />
 
-
-
+                <button className='py-2 px-6 bg-[#452b1a] text-white text-[14px] mr-4' onClick={handleSubmit} disabled={submitting}>
+                {submitting ? 'Saving...' : 'Save Product'}
+                </button>
             </div>
 
           </div>

@@ -23,7 +23,7 @@ const EditProductForm = ({ type, value, onChangeFunction, placeholder, labelText
                 
                 <input
                     value={value}
-                    onChange={() => onChangeFunction}
+                    onChange={onChangeFunction}
                     type='text'
                     placeholder={placeholder}
                     required

@@ -66,16 +66,16 @@ const AdminProducts = () => {
 
             {showDeleteConfirmation && (
               <div className='md:px-20 md:py-8 flex justify-center items-center px-2 py-4 fixed z-50 top-0 w-screen h-full overflow-scroll left-0 bg-black bg-opacity-50'>
-                <div className='bg-white pb-12 rounded-lg w-1/2'>
+                <div className='bg-white rounded-lg w-1/2'>
                   <button onClick={() => {setShowDeleteConfirmation(false)}} className='py-6 relative'>
                       <RxCross2 className='absolute top-3 left-4 text-gray-700' size={24}/>
                   </button>
 
                   <hr className='w-full text-gray-600 opacity-70 h-px'/>
 
-                  <div className='md:mx-20 md:my-8 my-4 mx-2 md:space-y-6 space-y-2'>
+                  <div className='md:mx-12 md:my-8 my-4 mx-2 md:space-y-6 space-y-2'>
                     <p>Are you sure you want to delete this product?</p>
-                    <div className='flex gap-x-2 items-center w-full'>
+                    <div className='flex gap-x-4 items-center w-full'>
                       <button onClick={() => setShowDeleteConfirmation(false)} className='border-[#452b1a] border text-[452b1a] py-2 px-6'>Cancel</button>
                       <button onClick={() => handleRemoveProductFromDb(item._id)} className='bg-[#DC3545] text-[#fff] py-2 px-6 '>Delete</button>
                     </div>

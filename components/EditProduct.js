@@ -22,7 +22,7 @@ const EditProduct = ({ slug }) => {
   return (
     <div className='flex flex-col space-y-6'>
       <EditProductTopbar submitting={submitting}/>
-      <EditProductContent productItems={productItems} setSubmitting={setSubmitting} slug={slug}/>  
+      <EditProductContent productItems={productItems} submitting={submitting} setSubmitting={setSubmitting} slug={slug}/>  
     </div>
   )
 }
